@@ -15,7 +15,6 @@ import {
   signOut as firebaseSignOut,
 } from "@/lib/firebase/auth";
 
-// Define context type
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -28,26 +27,21 @@ interface AuthContextType {
   signOut: () => Promise<void>;
 }
 
-// Create context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Provider component
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Listen to auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
     });
 
-    // Cleanup subscription
     return () => unsubscribe();
   }, []);
 
-  // Sign up function
   const signUp = async (
     email: string,
     password: string,
@@ -61,7 +55,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Sign in function
   const signIn = async (email: string, password: string) => {
     setLoading(true);
     try {
@@ -71,7 +64,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Sign out function
   const signOut = async () => {
     setLoading(true);
     try {
@@ -92,7 +84,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// Custom hook to use auth context
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
