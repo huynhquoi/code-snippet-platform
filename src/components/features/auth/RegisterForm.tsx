@@ -20,11 +20,23 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 // Validation schema
-const registerSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  displayName: z.string().min(2, "Display name must be at least 2 characters"),
-});
+const registerSchema = z
+  .object({
+    displayName: z
+      .string()
+      .min(2, "Display name must be at least 2 characters")
+      .max(50, "Display name must be less than 50 characters"),
+    email: z.string().email("Invalid email address"),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(100, "Password must be less than 100 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
@@ -36,9 +48,10 @@ export function RegisterForm() {
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      displayName: "",
       email: "",
       password: "",
-      displayName: "",
+      confirmPassword: "",
     },
   });
 
@@ -46,22 +59,25 @@ export function RegisterForm() {
     setIsLoading(true);
     try {
       await signUp(data.email, data.password, data.displayName);
-      toast.success("Register in successfully!!!");
+
+      toast.success("Account created successfully");
+
+      // Redirect to homepage after successful registration
       router.push("/");
     } catch (error: any) {
       console.error("Register error:", error);
 
       // Handle specific error messages
-      let errorMessage = "Failed to register. Please try again.";
+      let errorMessage = "Failed to create account. Please try again.";
 
       if (error.code === "auth/email-already-in-use") {
-        errorMessage = "Email is already in use";
+        errorMessage = "This email is already registered";
       } else if (error.code === "auth/invalid-email") {
         errorMessage = "Invalid email address";
       } else if (error.code === "auth/weak-password") {
         errorMessage = "Password is too weak";
-      } else if (error.code === "auth/too-many-requests") {
-        errorMessage = "Too many failed attempts. Please try again later.";
+      } else if (error.code === "auth/operation-not-allowed") {
+        errorMessage = "Email/password accounts are not enabled";
       }
 
       toast.error(errorMessage);
@@ -73,7 +89,24 @@ export function RegisterForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Email Field */}
+        <FormField
+          control={form.control}
+          name="displayName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Display Name</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter your name"
+                  {...field}
+                  disabled={isLoading}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="email"
@@ -93,7 +126,6 @@ export function RegisterForm() {
           )}
         />
 
-        {/* Password Field */}
         <FormField
           control={form.control}
           name="password"
@@ -103,7 +135,7 @@ export function RegisterForm() {
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="Create a password (min 6 characters)"
                   {...field}
                   disabled={isLoading}
                 />
@@ -113,17 +145,16 @@ export function RegisterForm() {
           )}
         />
 
-        {/* Display name Field */}
         <FormField
           control={form.control}
-          name="displayName"
+          name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Display Name</FormLabel>
+              <FormLabel>Confirm Password</FormLabel>
               <FormControl>
                 <Input
-                  type="text"
-                  placeholder="Enter your display name"
+                  type="password"
+                  placeholder="Confirm your password"
                   {...field}
                   disabled={isLoading}
                 />
@@ -133,15 +164,14 @@ export function RegisterForm() {
           )}
         />
 
-        {/* Submit Button */}
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Registering...
+              Creating account...
             </>
           ) : (
-            "Register"
+            "Create Account"
           )}
         </Button>
       </form>
