@@ -78,6 +78,35 @@ export default function SnippetDetailPage() {
     fetchSnippet();
   }, [params.slug, user, router]);
 
+  useEffect(() => {
+    if (!snippet) return;
+
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "SoftwareSourceCode",
+      name: snippet.title,
+      codeSampleType: "Full",
+      programmingLanguage: snippet.language,
+      codeRepository: window.location.href,
+      author: {
+        "@type": "Person",
+        name: snippet.userDisplayName,
+      },
+      dateCreated: snippet.createdAt,
+      dateModified: snippet.updatedAt || snippet.createdAt,
+      text: snippet.code.slice(0, 5000),
+    };
+
+    const oldScript = document.getElementById("snippet-jsonld");
+    if (oldScript) oldScript.remove();
+
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.id = "snippet-jsonld";
+    script.innerHTML = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+  }, [snippet]);
+
   const handleCopyCode = async () => {
     if (!snippet) return;
 
