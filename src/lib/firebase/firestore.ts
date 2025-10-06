@@ -4,6 +4,7 @@ import {
   getDoc,
   getDocs,
   addDoc,
+  setDoc,
   updateDoc,
   deleteDoc,
   query,
@@ -60,7 +61,7 @@ export async function createSnippet(data: {
         count: increment(1),
       });
     } else {
-      await updateDoc(tagRef, {
+      await setDoc(tagRef, {
         name: tagName,
         slug: tagSlug,
         count: 1,
@@ -189,7 +190,7 @@ export async function updateSnippet(
       if (tagSnap.exists()) {
         await updateDoc(tagRef, { count: increment(1) });
       } else {
-        await updateDoc(tagRef, {
+        await setDoc(tagRef, {
           name: tagName,
           slug: tagSlug,
           count: 1,
