@@ -1,16 +1,17 @@
 "use client";
 
 import { useRequireAuth } from "@/hooks/useRequireAuth";
+import { SnippetForm } from "@/components/features/snippet/SnippetForm";
 
 export default function NewSnippetPage() {
   const { user, loading } = useRequireAuth();
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-muted rounded w-1/4 mb-4"></div>
-          <div className="h-64 bg-muted rounded"></div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -21,11 +22,14 @@ export default function NewSnippetPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold">Create New Snippet</h1>
-      <p className="text-muted-foreground mt-2">
-        Form coming soon... (Phase 3)
-      </p>
+    <div className="container max-w-4xl mx-auto py-8 px-4">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Create New Snippet</h1>
+        <p className="text-muted-foreground">
+          Share your code with the community
+        </p>
+      </div>
+      <SnippetForm />
     </div>
   );
 }
