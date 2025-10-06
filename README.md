@@ -5,6 +5,17 @@ A modern community-driven web app for sharing, exploring, and analyzing code sni
 Live Demo 👉 [code-snippet-platform-one.vercel.app](https://code-snippet-platform-one.vercel.app)
 
 ---
+## 📊 Timeline
+
+- **Phase 0**: shadcn/ui Setup
+- **Phase 1**: Project Setup & Firebase Config 
+- **Phase 2**: Authentication 
+- **Phase 3**: Core CRUD Features 
+- **Phase 4**: Advanced Features 
+- **Phase 5**: Bonus - Complexity Analyzer
+- **Phase 6**: UI Polish & Responsive
+- **Phase 7**: Testing & Deployment
+---
 
 ## 🌟 Features
 
