@@ -114,6 +114,7 @@ export function SnippetForm({
           userDisplayName: user.displayName || "Anonymous",
           isPublic: data.isPublic,
           username: user.username || user.email?.split("@")[0] || "user",
+          complexity: complexity || "",
         });
 
         toast.success(tNoti("snippetCreated"));
