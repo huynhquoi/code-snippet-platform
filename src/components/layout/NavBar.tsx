@@ -40,6 +40,7 @@ export function Navbar() {
       router.push("/login");
     } catch (error) {
       toast.error(tAuth("logoutFailed"));
+      console.error("Error logging out:", error);
     }
   };
 

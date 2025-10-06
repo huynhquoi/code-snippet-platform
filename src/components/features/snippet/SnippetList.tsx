@@ -30,7 +30,13 @@ export function SnippetList({ filters }: SnippetListProps) {
       setError(null);
 
       try {
-        const options: any = {
+        const options: {
+          isPublic: boolean;
+          limitCount: number;
+          language?: string;
+          tag?: string;
+          orderByField?: string;
+        } = {
           isPublic: true,
           limitCount: 12,
         };
@@ -45,7 +51,6 @@ export function SnippetList({ filters }: SnippetListProps) {
 
         if (filters.sort === "oldest") {
           options.orderByField = "createdAt";
-          // Note: Will need to modify getSnippets to support asc/desc
         }
 
         let fetchedSnippets = await getSnippets(options);
@@ -108,7 +113,8 @@ export function SnippetList({ filters }: SnippetListProps) {
   return (
     <div>
       <div className="mb-4 text-sm text-muted-foreground">
-        {t("found")} {snippets.length} {snippets.length !== 1 ? t("snippets") : t("snippet")}
+        {t("found")} {snippets.length}{" "}
+        {snippets.length !== 1 ? t("snippets") : t("snippet")}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {snippets.map((snippet) => (

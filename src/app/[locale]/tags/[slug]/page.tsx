@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getTagBySlug, getSnippets } from "@/lib/firebase/firestore";
-import { Snippet } from "@/types";
+import { Snippet, Tag } from "@/types";
 import { SnippetCard } from "@/components/features/snippet/SnippetCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import { toast } from "sonner";
 export default function TagDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const [tag, setTag] = useState<any>(null);
+  const [tag, setTag] = useState<Tag | null>(null);
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [loading, setLoading] = useState(true);
 

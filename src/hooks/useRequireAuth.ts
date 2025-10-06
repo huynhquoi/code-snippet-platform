@@ -14,7 +14,7 @@ export function useRequireAuth() {
       toast.error("Please login to access this page");
       router.push("/login");
     }
-  }, [user, loading, router, toast]);
+  }, [user, loading, router]);
 
   return { user, loading };
 }

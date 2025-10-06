@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { FirebaseError } from "firebase/app";
 
 // Validation schema
 const registerSchema = z
@@ -67,23 +68,27 @@ export function RegisterForm() {
 
       // Redirect to homepage after successful registration
       router.push("/");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Register error:", error);
 
       // Handle specific error messages
-      let errorMessage = t("createFailed");
+      if (error instanceof FirebaseError) {
+        let errorMessage = t("createFailed");
 
-      if (error.code === "auth/email-already-in-use") {
-        errorMessage = t("existAccount");
-      } else if (error.code === "auth/invalid-email") {
-        errorMessage = t("invalidEmail");
-      } else if (error.code === "auth/weak-password") {
-        errorMessage = t("weekPassword");
-      } else if (error.code === "auth/operation-not-allowed") {
-        errorMessage = t("notAllow");
+        if (error.code === "auth/email-already-in-use") {
+          errorMessage = t("existAccount");
+        } else if (error.code === "auth/invalid-email") {
+          errorMessage = t("invalidEmail");
+        } else if (error.code === "auth/weak-password") {
+          errorMessage = t("weekPassword");
+        } else if (error.code === "auth/operation-not-allowed") {
+          errorMessage = t("notAllow");
+        }
+
+        toast.error(errorMessage);
+      } else {
+        toast.error(t("createFailed"));
       }
-
-      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

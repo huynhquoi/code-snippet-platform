@@ -14,10 +14,11 @@ import { locales } from "@/i18n/request";
 // };
 
 export async function generateMetadata({
-  params: { locale },
+  params,
 }: {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
+  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
 
   return {
@@ -29,8 +30,10 @@ export async function generateMetadata({
 
 type Props = {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
+
+type Locale = (typeof locales)[number];
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -38,9 +41,11 @@ export function generateStaticParams() {
 
 export default async function LocaleLayout({
   children,
-  params: { locale },
+  params
 }: Props) {
-  if (!locales.includes(locale as any)) {
+  const { locale } = await params;
+  
+  if (!locales.includes(locale as Locale)) {
     notFound();
   }
 

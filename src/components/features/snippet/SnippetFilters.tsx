@@ -36,14 +36,16 @@ const LANGUAGES = [
   "CSS",
 ];
 
+interface SnippetFiltersType {
+  search: string;
+  language: string;
+  tag: string;
+  sort: string;
+}
+
 interface SnippetFiltersProps {
-  filters: {
-    search: string;
-    language: string;
-    tag: string;
-    sort: string;
-  };
-  onFiltersChange: (filters: any) => void;
+  filters: SnippetFiltersType;
+  onFiltersChange: (filters: SnippetFiltersType) => void;
 }
 
 export function SnippetFilters({
@@ -190,7 +192,9 @@ export function SnippetFilters({
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">{tTags("noTagFound")}</p>
+            <p className="text-sm text-muted-foreground">
+              {tTags("noTagFound")}
+            </p>
           )}
         </div>
       </CardContent>

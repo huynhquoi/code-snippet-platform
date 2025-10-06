@@ -2,11 +2,11 @@ import { getSnippetBySlug } from "@/lib/firebase/firestore";
 import { Metadata } from "next";
 
 export async function generateMetadata({
-  params: { slug, locale },
+  params
 }: {
-  params: { slug: string; locale: string };
+  params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
-  // Fetch snippet data
+  const { slug } = await params;
   const snippet = await getSnippetBySlug(slug);
 
   if (!snippet) {

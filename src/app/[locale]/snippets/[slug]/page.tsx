@@ -87,7 +87,7 @@ export default function SnippetDetailPage() {
       toast.success("Code copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      toast.error("Failed to copy code");
+      toast.error("Failed to copy code " + error);
     }
   };
 
@@ -97,7 +97,7 @@ export default function SnippetDetailPage() {
       await navigator.clipboard.writeText(url);
       toast.success("Link copied to clipboard!");
     } catch (error) {
-      toast.error("Failed to copy link");
+      toast.error("Failed to copy link " + error);
     }
   };
 

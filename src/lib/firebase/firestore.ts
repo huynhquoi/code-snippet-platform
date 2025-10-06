@@ -162,12 +162,13 @@ export async function updateSnippet(
     tags?: string[];
     complexity?: string;
     isPublic?: boolean;
+    slug?: string;
   },
   oldTags?: string[]
 ) {
   const snippetRef = doc(db, "snippets", id);
 
-  const updateData: any = {
+  const updateData = {
     ...data,
     updatedAt: serverTimestamp(),
   };

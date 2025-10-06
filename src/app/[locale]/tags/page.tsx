@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getTags } from "@/lib/firebase/firestore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -109,7 +109,7 @@ export default function TagsPage() {
 
               <Select
                 value={sortBy}
-                onValueChange={(value: any) => setSortBy(value)}
+                onValueChange={(value: "count" | "name") => setSortBy(value)}
               >
                 <SelectTrigger className="w-full md:w-[200px]">
                   <SelectValue placeholder="Sort by" />

@@ -17,12 +17,35 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 
+interface UserData {
+  uid: string;
+  email: string;
+  displayName: string;
+  username: string;
+  photoURL?: string | undefined;
+  createdAt: Date;
+  snippetCount: number;
+}
+
+interface UserStats {
+  totalSnippets: number;
+  totalViews: number;
+  languages: {
+    name: string;
+    count: number;
+  }[];
+  topTags: {
+    name: string;
+    count: number;
+  }[];
+}
+
 export default function ProfilePage() {
   const params = useParams();
   const router = useRouter();
   const { user: currentUser } = useAuth();
-  const [profileUser, setProfileUser] = useState<any>(null);
-  const [stats, setStats] = useState<any>(null);
+  const [profileUser, setProfileUser] = useState<UserData | null>(null);
+  const [stats, setStats] = useState<UserStats | null>(null);
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [loading, setLoading] = useState(true);
   const t = useTranslations("profile");

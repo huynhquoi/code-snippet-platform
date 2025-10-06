@@ -3,10 +3,11 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata({
-  params: { username, locale },
+  params,
 }: {
-  params: { username: string; locale: string };
+  params: Promise<{ username: string; locale: string }>;
 }): Promise<Metadata> {
+  const { username, locale } = await params;
   const user = await getUserByUsername(username);
 
   if (!user) {
@@ -22,7 +23,7 @@ export async function generateMetadata({
     description: `View ${user.displayName}'s code snippets and profile. ${user.snippetCount} snippets shared.`,
     openGraph: {
       title: `${user.displayName} (@${user.username})`,
-      description: `View code snippets from ${user.displayName}`,
+      description: `${t("viewProfile")} ${user.displayName}`,
       type: "profile",
     },
   };

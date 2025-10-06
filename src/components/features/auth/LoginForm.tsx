@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { FirebaseError } from "firebase/app";
 
 // Validation schema
 const loginSchema = z.object({
@@ -49,26 +50,29 @@ export function LoginForm() {
       await signIn(data.email, data.password);
       toast.success(tNoti("loginSuccess"));
       router.push("/");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
 
-      // Handle specific error messages
-      let errorMessage = tNoti("loginFailed");
+      if (error instanceof FirebaseError) {
+        let errorMessage = t("loginFailed");
 
-      if (
-        error.code === "auth/invalid-credential" ||
-        error.code === "auth/invalid-login-credentials"
-      ) {
-        errorMessage = tNoti("invalidAccount");
-      } else if (error.code === "auth/user-not-found") {
-        errorMessage = tNoti("noAccount");
-      } else if (error.code === "auth/wrong-password") {
-        errorMessage = tNoti("invalidPassword");
-      } else if (error.code === "auth/too-many-requests") {
-        errorMessage = tNoti("manyReq");
+        if (
+          error.code === "auth/invalid-credential" ||
+          error.code === "auth/invalid-login-credentials"
+        ) {
+          errorMessage = t("invalidAccount");
+        } else if (error.code === "auth/user-not-found") {
+          errorMessage = t("noAccount");
+        } else if (error.code === "auth/wrong-password") {
+          errorMessage = t("invalidPassword");
+        } else if (error.code === "auth/too-many-requests") {
+          errorMessage = t("manyReq");
+        }
+
+        toast.error(errorMessage);
+      } else {
+        toast.error(t("loginFailed"));
       }
-
-      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
