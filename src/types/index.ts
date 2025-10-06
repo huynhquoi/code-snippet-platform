@@ -18,6 +18,7 @@ export interface Snippet {
   tags: string[];
   userId: string;
   userDisplayName: string;
+  username: string;
   complexity?: string;
   isPublic: boolean;
   createdAt: Date;

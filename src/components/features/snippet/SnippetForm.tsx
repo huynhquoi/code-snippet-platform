@@ -31,6 +31,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import { TagInput } from "./TagInput";
+import { useTranslations } from "next-intl";
 
 const LANGUAGES = [
   "JavaScript",
@@ -75,6 +76,8 @@ export function SnippetForm({
   const router = useRouter();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations("snippet");
+  const tNoti = useTranslations("notification");
 
   const form = useForm<SnippetFormData>({
     resolver: zodResolver(snippetSchema),
@@ -90,7 +93,7 @@ export function SnippetForm({
 
   const onSubmit = async (data: SnippetFormData) => {
     if (!user) {
-      toast.error("You must be logged in");
+      toast.error(tNoti("mustBeLogin"));
       return;
     }
 
@@ -108,14 +111,15 @@ export function SnippetForm({
           userId: user.uid,
           userDisplayName: user.displayName || "Anonymous",
           isPublic: data.isPublic,
+          username: user.username || user.email?.split("@")[0] || "user",
         });
 
-        toast.success("Snippet created successfully!");
+        toast.success(tNoti("snippetCreated"));
         router.push(`/snippets/${slug}`);
       } else {
         // Update existing snippet
         if (!snippetId) {
-          toast.error("Snippet ID is missing");
+          toast.error(tNoti("snippetMissId"));
           return;
         }
 
@@ -132,7 +136,7 @@ export function SnippetForm({
           defaultValues?.tags || []
         );
 
-        toast.success("Snippet updated successfully!");
+        toast.success(tNoti("snippetUpdated"));
         router.push(`/snippets/${newSlug}`);
       }
     } catch (error) {
@@ -141,9 +145,9 @@ export function SnippetForm({
         error
       );
       toast.error(
-        `Failed to ${
-          mode === "create" ? "create" : "update"
-        } snippet. Please try again.`
+        `${tNoti("Failed to")} ${
+          mode === "create" ? tNoti("created") : tNoti("updated")
+        } ${tNoti("tryAgain")}`
       );
     } finally {
       setIsSubmitting(false);
@@ -155,13 +159,12 @@ export function SnippetForm({
       <CardContent className="pt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Title */}
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title *</FormLabel>
+                  <FormLabel>{t("title")} *</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="e.g., Binary Search Implementation"
@@ -173,14 +176,13 @@ export function SnippetForm({
               )}
             />
 
-            {/* Language & Topic Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="language"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Language *</FormLabel>
+                    <FormLabel>{t("language")} *</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -208,7 +210,7 @@ export function SnippetForm({
                 name="topic"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Topic (Optional)</FormLabel>
+                    <FormLabel>{t("topic")} (Optional)</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="e.g., Algorithms, Data Structures"
@@ -227,13 +229,13 @@ export function SnippetForm({
               name="code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Code *</FormLabel>
+                  <FormLabel>{t("code")} *</FormLabel>
                   <FormControl>
                     <div className="border rounded-md overflow-hidden">
                       <CodeEditor
                         value={field.value}
                         language={form.watch("language").toLowerCase()}
-                        placeholder="Paste your code here..."
+                        placeholder={t("pasteCode")}
                         onChange={(e) => field.onChange(e.target.value)}
                         padding={15}
                         style={{
@@ -256,7 +258,7 @@ export function SnippetForm({
               name="tags"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tags (Max 5)</FormLabel>
+                  <FormLabel>{t("tags")} (Max 5)</FormLabel>
                   <FormControl>
                     <TagInput
                       value={field.value}
@@ -276,9 +278,11 @@ export function SnippetForm({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Public Snippet</FormLabel>
+                    <FormLabel className="text-base">
+                      {t("publicSnippet")}
+                    </FormLabel>
                     <div className="text-sm text-muted-foreground">
-                      Make this snippet visible to everyone
+                      {t("publicSubtitle")}
                     </div>
                   </div>
                   <FormControl>
@@ -297,7 +301,7 @@ export function SnippetForm({
                 {isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
-                {mode === "create" ? "Create Snippet" : "Update Snippet"}
+                {mode === "create" ? t("create") : t("update")}
               </Button>
               <Button
                 type="button"
@@ -305,7 +309,7 @@ export function SnippetForm({
                 onClick={() => router.back()}
                 disabled={isSubmitting}
               >
-                Cancel
+                {t("cancel")}
               </Button>
             </div>
           </form>

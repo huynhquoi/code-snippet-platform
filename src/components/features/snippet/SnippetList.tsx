@@ -7,6 +7,7 @@ import { SnippetCard } from "./SnippetCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useTranslations } from "next-intl";
 
 interface SnippetListProps {
   filters: {
@@ -21,6 +22,7 @@ export function SnippetList({ filters }: SnippetListProps) {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("snippet");
 
   useEffect(() => {
     const fetchSnippets = async () => {
@@ -96,8 +98,8 @@ export function SnippetList({ filters }: SnippetListProps) {
       <div className="text-center py-12">
         <div className="text-muted-foreground mb-4">
           <AlertCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
-          <p className="text-lg">No snippets found</p>
-          <p className="text-sm">Try adjusting your filters</p>
+          <p className="text-lg">{t("noSnippets")}</p>
+          <p className="text-sm">{t("adjustFilter")}</p>
         </div>
       </div>
     );
@@ -106,7 +108,7 @@ export function SnippetList({ filters }: SnippetListProps) {
   return (
     <div>
       <div className="mb-4 text-sm text-muted-foreground">
-        Found {snippets.length} snippet{snippets.length !== 1 ? "s" : ""}
+        {t("found")} {snippets.length} {snippets.length !== 1 ? t("snippets") : t("snippet")}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {snippets.map((snippet) => (

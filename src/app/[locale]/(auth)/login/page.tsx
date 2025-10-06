@@ -6,22 +6,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 export default function LoginPage() {
+  const t = useTranslations("auth");
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Welcome Back</CardTitle>
-          <CardDescription>Login to your account to continue</CardDescription>
+          <CardTitle>{t("wellcome")}</CardTitle>
+          <CardDescription>{t("loginTitle")}</CardDescription>
         </CardHeader>
         <CardContent>
           <LoginForm />
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
+            {t("noAccount")}{" "}
             <Link href="/register" className="text-primary hover:underline">
-              Register
+              {t("register")}
             </Link>
           </p>
         </CardContent>

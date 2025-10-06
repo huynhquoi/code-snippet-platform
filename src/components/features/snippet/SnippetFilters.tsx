@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
 import { getTags } from "@/lib/firebase/firestore";
 import { Tag } from "@/types";
+import { useTranslations } from "next-intl";
 
 const LANGUAGES = [
   "JavaScript",
@@ -51,6 +52,8 @@ export function SnippetFilters({
 }: SnippetFiltersProps) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(false);
+  const t = useTranslations("filters");
+  const tTags = useTranslations("tags");
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -86,7 +89,7 @@ export function SnippetFilters({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-lg">
-          <span>Filters</span>
+          <span>{t("filters")}</span>
           {hasActiveFilters && (
             <Button
               variant="ghost"
@@ -102,14 +105,13 @@ export function SnippetFilters({
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {/* Search */}
         <div className="space-y-2">
-          <Label htmlFor="search">Search</Label>
+          <Label htmlFor="search">{t("search")}</Label>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               id="search"
-              placeholder="Search snippets..."
+              placeholder={t("searchSnippet")}
               value={filters.search}
               onChange={(e) =>
                 onFiltersChange({ ...filters, search: e.target.value })
@@ -119,9 +121,8 @@ export function SnippetFilters({
           </div>
         </div>
 
-        {/* Language */}
         <div className="space-y-2">
-          <Label htmlFor="language">Language</Label>
+          <Label htmlFor="language">{t("language")}</Label>
           <Select
             value={filters.language || "all"}
             onValueChange={(value) =>
@@ -132,10 +133,10 @@ export function SnippetFilters({
             }
           >
             <SelectTrigger id="language">
-              <SelectValue placeholder="All languages" />
+              <SelectValue placeholder={t("allLanguage")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All languages</SelectItem>
+              <SelectItem value="all">{t("allLanguage")}</SelectItem>
               {LANGUAGES.map((lang) => (
                 <SelectItem key={lang} value={lang}>
                   {lang}
@@ -147,7 +148,7 @@ export function SnippetFilters({
 
         {/* Sort */}
         <div className="space-y-2">
-          <Label htmlFor="sort">Sort by</Label>
+          <Label htmlFor="sort">{t("sort")}</Label>
           <Select
             value={filters.sort}
             onValueChange={(value) =>
@@ -158,16 +159,16 @@ export function SnippetFilters({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="newest">Newest</SelectItem>
-              <SelectItem value="oldest">Oldest</SelectItem>
-              <SelectItem value="views">Most Viewed</SelectItem>
+              <SelectItem value="newest">{t("newest")}</SelectItem>
+              <SelectItem value="oldest">{t("oldest")}</SelectItem>
+              <SelectItem value="views">{t("mostViewed")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Tags */}
         <div className="space-y-2">
-          <Label>Popular Tags</Label>
+          <Label>{tTags("popularTags")}</Label>
           {loading ? (
             <p className="text-sm text-muted-foreground">Loading tags...</p>
           ) : tags.length > 0 ? (
@@ -189,7 +190,7 @@ export function SnippetFilters({
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">No tags yet</p>
+            <p className="text-sm text-muted-foreground">{tTags("noTagFound")}</p>
           )}
         </div>
       </CardContent>

@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 // Validation schema
 const loginSchema = z.object({
@@ -31,6 +32,8 @@ export function LoginForm() {
   const router = useRouter();
   const { signIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const t = useTranslations("auth");
+  const tNoti = useTranslations("notification");
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -44,25 +47,25 @@ export function LoginForm() {
     setIsLoading(true);
     try {
       await signIn(data.email, data.password);
-      toast.success("Logged in successfully!!!");
+      toast.success(tNoti("loginSuccess"));
       router.push("/");
     } catch (error: any) {
       console.error("Login error:", error);
 
       // Handle specific error messages
-      let errorMessage = "Failed to login. Please try again.";
+      let errorMessage = tNoti("loginFailed");
 
       if (
         error.code === "auth/invalid-credential" ||
         error.code === "auth/invalid-login-credentials"
       ) {
-        errorMessage = "Invalid email or password";
+        errorMessage = tNoti("invalidAccount");
       } else if (error.code === "auth/user-not-found") {
-        errorMessage = "No account found with this email";
+        errorMessage = tNoti("noAccount");
       } else if (error.code === "auth/wrong-password") {
-        errorMessage = "Incorrect password";
+        errorMessage = tNoti("invalidPassword");
       } else if (error.code === "auth/too-many-requests") {
-        errorMessage = "Too many failed attempts. Please try again later.";
+        errorMessage = tNoti("manyReq");
       }
 
       toast.error(errorMessage);
@@ -80,11 +83,11 @@ export function LoginForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("email")}</FormLabel>
               <FormControl>
                 <Input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={t("emailPlaceholder")}
                   {...field}
                   disabled={isLoading}
                 />
@@ -100,11 +103,11 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t("password")}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder={t("passwordPlaceholder")}
                   {...field}
                   disabled={isLoading}
                 />
@@ -114,15 +117,14 @@ export function LoginForm() {
           )}
         />
 
-        {/* Submit Button */}
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Logging in...
+              {t("loggingIn")}
             </>
           ) : (
-            "Login"
+            t("login")
           )}
         </Button>
       </form>

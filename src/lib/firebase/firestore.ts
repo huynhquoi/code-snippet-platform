@@ -31,6 +31,7 @@ export async function createSnippet(data: {
   tags: string[];
   userId: string;
   userDisplayName: string;
+  username: string;
   complexity?: string;
   isPublic: boolean;
 }) {

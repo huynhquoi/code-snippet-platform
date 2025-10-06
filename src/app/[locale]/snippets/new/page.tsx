@@ -2,9 +2,11 @@
 
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { SnippetForm } from "@/components/features/snippet/SnippetForm";
+import { useTranslations } from "next-intl";
 
 export default function NewSnippetPage() {
   const { user, loading } = useRequireAuth();
+  const t = useTranslations("snippet");
 
   if (loading) {
     return (
@@ -24,10 +26,8 @@ export default function NewSnippetPage() {
   return (
     <div className="container max-w-4xl mx-auto py-8 px-4">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Create New Snippet</h1>
-        <p className="text-muted-foreground">
-          Share your code with the community
-        </p>
+        <h1 className="text-3xl font-bold mb-2">{t("createNew")}</h1>
+        <p className="text-muted-foreground">{t("shareNew")}</p>
       </div>
       <SnippetForm />
     </div>

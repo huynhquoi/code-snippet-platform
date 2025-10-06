@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Code2, Eye, Hash } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface ProfileStatsProps {
   stats: {
@@ -12,12 +13,13 @@ interface ProfileStatsProps {
 }
 
 export function ProfileStats({ stats }: ProfileStatsProps) {
+  const t = useTranslations("profile");
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Overview Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Overview</CardTitle>
+          <CardTitle className="text-lg">{t("overview")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
@@ -33,7 +35,7 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Eye className="h-5 w-5 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Total Views</span>
+              <span className="text-sm text-muted-foreground">{t("totalView")}</span>
             </div>
             <span className="text-2xl font-bold">{stats.totalViews}</span>
           </div>
@@ -43,7 +45,7 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
       {/* Languages Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Languages Used</CardTitle>
+          <CardTitle className="text-lg">{t("languageUsed")}</CardTitle>
         </CardHeader>
         <CardContent>
           {stats.languages.length > 0 ? (
@@ -55,7 +57,7 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">No snippets yet</p>
+            <p className="text-sm text-muted-foreground">{t("noSnippets")}</p>
           )}
         </CardContent>
       </Card>
@@ -65,7 +67,7 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Hash className="h-5 w-5" />
-            Most Used Tags
+            {t("mostTags")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -78,7 +80,7 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">No tags yet</p>
+            <p className="text-sm text-muted-foreground">{t("noTags")}</p>
           )}
         </CardContent>
       </Card>

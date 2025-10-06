@@ -39,7 +39,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 
 export default function SnippetDetailPage() {
   const params = useParams();
@@ -157,11 +157,9 @@ export default function SnippetDetailPage() {
       </Button>
 
       <div className="space-y-6">
-        {/* Header */}
         <div>
           <h1 className="text-3xl font-bold mb-4">{snippet.title}</h1>
 
-          {/* Metadata */}
           <div className="flex flex-wrap gap-2 mb-4">
             <Badge variant="secondary">{snippet.language}</Badge>
             {snippet.topic && <Badge variant="outline">{snippet.topic}</Badge>}
@@ -182,7 +180,6 @@ export default function SnippetDetailPage() {
             </Badge>
           </div>
 
-          {/* Tags */}
           {snippet.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {snippet.tags.map((tag) => (
@@ -194,7 +191,6 @@ export default function SnippetDetailPage() {
           )}
         </div>
 
-        {/* Code Block */}
         <Card>
           <CardContent className="p-4">
             <div className="relative">
@@ -227,7 +223,6 @@ export default function SnippetDetailPage() {
           </CardContent>
         </Card>
 
-        {/* Actions */}
         <div className="flex gap-3">
           <Button variant="outline" onClick={handleShare}>
             <Share2 className="h-4 w-4 mr-2" />
@@ -277,24 +272,26 @@ export default function SnippetDetailPage() {
           )}
         </div>
 
-        {/* Author Card */}
-        <Card>
-          <CardContent>
-            <div className="flex items-center gap-4">
-              <Avatar className="h-12 w-12">
-                <AvatarFallback className="text-lg">
-                  {snippet.userDisplayName[0]?.toUpperCase() || "U"}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1">
-                <p className="font-semibold">{snippet.userDisplayName}</p>
-                <p className="text-sm text-muted-foreground">
-                  Created {formatDistanceToNow(new Date(snippet.createdAt))} ago
-                </p>
+        <Link href={`/profile/${snippet.username}`}>
+          <Card>
+            <CardContent>
+              <div className="flex items-center gap-4">
+                <Avatar className="h-12 w-12">
+                  <AvatarFallback className="text-lg">
+                    {snippet.userDisplayName[0]?.toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <p className="font-semibold">{snippet.userDisplayName}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Created {formatDistanceToNow(new Date(snippet.createdAt))}{" "}
+                    ago
+                  </p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
     </div>
   );

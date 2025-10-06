@@ -6,24 +6,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 export default function RegisterPage() {
+  const t = useTranslations("auth");
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Create an Account</CardTitle>
-          <CardDescription>
-            Sign up to start sharing code snippets
-          </CardDescription>
+          <CardTitle>{t("registerTitle")}</CardTitle>
+          <CardDescription>{t("registerSubtitle")}</CardDescription>
         </CardHeader>
         <CardContent>
           <RegisterForm />
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
+            {t("haveAccount")}{" "}
             <Link href="/login" className="text-primary hover:underline">
-              Login
+              {t("login")}
             </Link>
           </p>
         </CardContent>

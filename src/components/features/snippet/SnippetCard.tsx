@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Eye } from "lucide-react";
-import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
+import { Link } from "@/i18n/routing";
 
 interface SnippetCardProps {
   snippet: Snippet;
@@ -41,12 +41,10 @@ export function SnippetCard({ snippet }: SnippetCardProps) {
         </CardHeader>
 
         <CardContent>
-          {/* Code Preview */}
           <pre className="text-sm bg-muted p-3 rounded overflow-hidden line-clamp-4 font-mono">
             <code>{snippet.code}</code>
           </pre>
 
-          {/* Tags */}
           {snippet.tags.length > 0 && (
             <div className="flex gap-1 flex-wrap mt-3">
               {snippet.tags.slice(0, 3).map((tag) => (
@@ -70,7 +68,6 @@ export function SnippetCard({ snippet }: SnippetCardProps) {
             </div>
           )}
 
-          {/* Author Info */}
           <div className="flex items-center gap-2 mt-4 pt-3 border-t">
             <Avatar className="w-6 h-6">
               <AvatarFallback className="text-xs">

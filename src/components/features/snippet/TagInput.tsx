@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/command";
 import { getTags } from "@/lib/firebase/firestore";
 import { Tag } from "@/types";
+import { useTranslations } from "next-intl";
 
 interface TagInputProps {
   value: string[];
@@ -26,13 +27,13 @@ export function TagInput({ value, onChange, maxTags = 5 }: TagInputProps) {
   const [open, setOpen] = useState(false);
   const [existingTags, setExistingTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(false);
+  const t = useTranslations("tags");
 
-  // Fetch existing tags from Firestore
   useEffect(() => {
     const fetchTags = async () => {
       setLoading(true);
       try {
-        const tags = await getTags(20); // Get top 20 tags
+        const tags = await getTags(20);
         setExistingTags(tags);
       } catch (error) {
         console.error("Error fetching tags:", error);
@@ -76,7 +77,6 @@ export function TagInput({ value, onChange, maxTags = 5 }: TagInputProps) {
     }
   };
 
-  // Filter tags based on input and exclude already selected
   const filteredTags = existingTags.filter(
     (tag) =>
       !value.includes(tag.name) &&
@@ -85,7 +85,6 @@ export function TagInput({ value, onChange, maxTags = 5 }: TagInputProps) {
 
   return (
     <div className="space-y-3">
-      {/* Input with Popover for suggestions */}
       <div className="flex gap-2">
         <div className="relative flex-1">
           <Input
@@ -100,7 +99,7 @@ export function TagInput({ value, onChange, maxTags = 5 }: TagInputProps) {
               // Delay to allow click on CommandItem
               setTimeout(() => setOpen(false), 200);
             }}
-            placeholder="Type to search or create new tag..."
+            placeholder={t("inputTagsPlaceholder")}
             disabled={value.length >= maxTags}
             className="pr-8"
           />
@@ -129,7 +128,7 @@ export function TagInput({ value, onChange, maxTags = 5 }: TagInputProps) {
                       )}
 
                       {filteredTags.length > 0 ? (
-                        <CommandGroup heading="Existing Tags">
+                        <CommandGroup heading={t("existTag")}>
                           {filteredTags.map((tag) => (
                             <CommandItem
                               key={tag.slug}
@@ -149,7 +148,7 @@ export function TagInput({ value, onChange, maxTags = 5 }: TagInputProps) {
                         </CommandGroup>
                       ) : (
                         !inputValue && (
-                          <CommandEmpty>No tags found.</CommandEmpty>
+                          <CommandEmpty>{t("noTagFound")}</CommandEmpty>
                         )
                       )}
                     </>

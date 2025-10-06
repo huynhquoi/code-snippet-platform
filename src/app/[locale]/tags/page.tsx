@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { getTags } from "@/lib/firebase/firestore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Search, Hash } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface Tag {
   name: string;
@@ -29,6 +30,7 @@ export default function TagsPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"count" | "name">("count");
+  const t = useTranslations("tags");
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -85,30 +87,26 @@ export default function TagsPage() {
   return (
     <div className="container max-w-6xl mx-auto py-8 px-4">
       <div className="space-y-8">
-        {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold mb-2">All Tags</h1>
+          <h1 className="text-3xl font-bold mb-2">{t("allTags")}</h1>
           <p className="text-muted-foreground">
-            Browse snippets by tags ({allTags.length} tags total)
+            {t("browseSnippet")} ({allTags.length} {t("tagsTotal")})
           </p>
         </div>
 
-        {/* Filters */}
         <Card>
-          <CardContent className="pt-6">
+          <CardContent>
             <div className="flex flex-col md:flex-row gap-4">
-              {/* Search */}
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search tags..."
+                  placeholder={t("search")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
                 />
               </div>
 
-              {/* Sort */}
               <Select
                 value={sortBy}
                 onValueChange={(value: any) => setSortBy(value)}
@@ -117,15 +115,14 @@ export default function TagsPage() {
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="count">Most Used</SelectItem>
-                  <SelectItem value="name">Alphabetical</SelectItem>
+                  <SelectItem value="count">{t("mostUsed")}</SelectItem>
+                  <SelectItem value="name">{t("alplabetical")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </CardContent>
         </Card>
 
-        {/* Tags Grid */}
         {filteredTags.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredTags.map((tag) => (
@@ -145,7 +142,7 @@ export default function TagsPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    {tag.count} {tag.count === 1 ? "snippet" : "snippets"}
+                    {tag.count} {tag.count === 1 ? t("snippet") : t("snippets")}
                   </p>
                 </CardContent>
               </Card>
@@ -157,8 +154,8 @@ export default function TagsPage() {
               <Hash className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <p className="text-muted-foreground">
                 {searchQuery
-                  ? `No tags found matching "${searchQuery}"`
-                  : "No tags available yet"}
+                  ? `${t("noTagMatch")} "${searchQuery}"`
+                  : t("noTagAvailable")}
               </p>
             </CardContent>
           </Card>

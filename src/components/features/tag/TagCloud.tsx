@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Hash } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface Tag {
   name: string;
@@ -26,6 +27,7 @@ export function TagCloud({
   const router = useRouter();
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useTranslations("tags");
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -68,7 +70,8 @@ export function TagCloud({
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Hash className="h-5 w-5" />
-            {title}
+            {/* {title} */}
+            {t("popularTags")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -90,7 +93,7 @@ export function TagCloud({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">No tags yet</p>
+          <p className="text-sm text-muted-foreground">{t("noTagFound")}</p>
         </CardContent>
       </Card>
     );

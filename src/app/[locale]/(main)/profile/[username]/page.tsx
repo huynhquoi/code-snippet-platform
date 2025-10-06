@@ -15,6 +15,7 @@ import { SnippetCard } from "@/components/features/snippet/SnippetCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function ProfilePage() {
   const params = useParams();
@@ -24,6 +25,7 @@ export default function ProfilePage() {
   const [stats, setStats] = useState<any>(null);
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useTranslations("profile");
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -89,9 +91,9 @@ export default function ProfilePage() {
         <Tabs defaultValue="snippets" className="w-full">
           <TabsList>
             <TabsTrigger value="snippets">
-              Snippets ({snippets.length})
+              {t("snippets")} ({snippets.length})
             </TabsTrigger>
-            <TabsTrigger value="stats">Stats</TabsTrigger>
+            <TabsTrigger value="stats">{t("stats")}</TabsTrigger>
           </TabsList>
 
           {/* Snippets Tab */}
@@ -106,8 +108,8 @@ export default function ProfilePage() {
               <div className="text-center py-12">
                 <p className="text-muted-foreground">
                   {isOwnProfile
-                    ? "You haven't created any snippets yet."
-                    : "This user hasn't created any public snippets yet."}
+                    ? t("profileNoSnippets")
+                    : t("thisProfileNoSnippets")}
                 </p>
               </div>
             )}

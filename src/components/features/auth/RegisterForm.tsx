@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 // Validation schema
 const registerSchema = z
@@ -44,6 +45,8 @@ export function RegisterForm() {
   const router = useRouter();
   const { signUp } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const t = useTranslations("auth");
+  const tNoti = useTranslations("notification");
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -60,7 +63,7 @@ export function RegisterForm() {
     try {
       await signUp(data.email, data.password, data.displayName);
 
-      toast.success("Account created successfully");
+      toast.success(tNoti("createSuccess"));
 
       // Redirect to homepage after successful registration
       router.push("/");
@@ -68,16 +71,16 @@ export function RegisterForm() {
       console.error("Register error:", error);
 
       // Handle specific error messages
-      let errorMessage = "Failed to create account. Please try again.";
+      let errorMessage = t("createFailed");
 
       if (error.code === "auth/email-already-in-use") {
-        errorMessage = "This email is already registered";
+        errorMessage = t("existAccount");
       } else if (error.code === "auth/invalid-email") {
-        errorMessage = "Invalid email address";
+        errorMessage = t("invalidEmail");
       } else if (error.code === "auth/weak-password") {
-        errorMessage = "Password is too weak";
+        errorMessage = t("weekPassword");
       } else if (error.code === "auth/operation-not-allowed") {
-        errorMessage = "Email/password accounts are not enabled";
+        errorMessage = t("notAllow");
       }
 
       toast.error(errorMessage);
@@ -94,10 +97,10 @@ export function RegisterForm() {
           name="displayName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Display Name</FormLabel>
+              <FormLabel>{t("displayName")}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter your name"
+                  placeholder={t("displayNamePlaceholder")}
                   {...field}
                   disabled={isLoading}
                 />
@@ -112,11 +115,11 @@ export function RegisterForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("email")}</FormLabel>
               <FormControl>
                 <Input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={t("emailPlaceholder")}
                   {...field}
                   disabled={isLoading}
                 />
@@ -131,11 +134,11 @@ export function RegisterForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t("password")}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Create a password (min 6 characters)"
+                  placeholder={t("passwordPlaceholderR")}
                   {...field}
                   disabled={isLoading}
                 />
@@ -150,11 +153,11 @@ export function RegisterForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
+              <FormLabel>{t("confirmPassword")}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Confirm your password"
+                  placeholder={t("confirmPasswordPlaceholder")}
                   {...field}
                   disabled={isLoading}
                 />
@@ -168,10 +171,10 @@ export function RegisterForm() {
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating account...
+              {t("creatingAccount")}
             </>
           ) : (
-            "Create Account"
+            t("createAccount")
           )}
         </Button>
       </form>

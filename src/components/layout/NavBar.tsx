@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,19 +22,24 @@ import { Code2, LogOut, User, FileText, Menu, Home, Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { Link } from "@/i18n/routing";
 
 export function Navbar() {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const t = useTranslations("nav");
+  const tAuth = useTranslations("auth");
 
   const handleLogout = async () => {
     try {
       await signOut();
-      toast.success("You have been logged out successfully");
+      toast.success(tAuth("loggedOut"));
       router.push("/login");
     } catch (error) {
-      toast.error("Failed to logout");
+      toast.error(tAuth("logoutFailed"));
     }
   };
 
@@ -58,23 +62,19 @@ export function Navbar() {
               href="/"
               className="text-sm hover:text-primary transition-colors"
             >
-              Home
-            </Link>
-            <Link
-              href="/snippets"
-              className="text-sm hover:text-primary transition-colors"
-            >
-              Snippets
+              {t("home")}
             </Link>
             <Link
               href="/tags"
               className="text-sm hover:text-primary transition-colors"
             >
-              Tags
+              {t("tags")}
             </Link>
           </div>
 
           <div className="hidden md:flex items-center gap-4">
+            <LanguageSwitcher />
+
             {loading ? (
               <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
             ) : user ? (
@@ -82,7 +82,7 @@ export function Navbar() {
                 <Button asChild variant="default" size="sm">
                   <Link href="/snippets/new">
                     <FileText className="w-4 h-4 mr-2" />
-                    New Snippet
+                    {t("newSnippet")}
                   </Link>
                 </Button>
 
@@ -119,13 +119,13 @@ export function Navbar() {
                         className="cursor-pointer"
                       >
                         <User className="mr-2 h-4 w-4" />
-                        Profile
+                        {t("profile")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/snippets?my=true" className="cursor-pointer">
                         <FileText className="mr-2 h-4 w-4" />
-                        My Snippets
+                        {t("mySnippets")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -134,7 +134,7 @@ export function Navbar() {
                       className="cursor-pointer text-red-600"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
-                      Logout
+                      {t("logout")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -142,16 +142,18 @@ export function Navbar() {
             ) : (
               <div className="flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm">
-                  <Link href="/login">Login</Link>
+                  <Link href="/login">{t("login")}</Link>
                 </Button>
                 <Button asChild variant="default" size="sm">
-                  <Link href="/register">Sign Up</Link>
+                  <Link href="/register">{t("register")}</Link>
                 </Button>
               </div>
             )}
           </div>
 
           <div className="flex md:hidden items-center gap-2">
+            <LanguageSwitcher />
+
             {loading ? (
               <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
             ) : user ? (
@@ -190,13 +192,13 @@ export function Navbar() {
                         className="cursor-pointer"
                       >
                         <User className="mr-2 h-4 w-4" />
-                        Profile
+                        {t("profile")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/snippets?my=true" className="cursor-pointer">
                         <FileText className="mr-2 h-4 w-4" />
-                        My Snippets
+                        {t("mySnippets")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -205,7 +207,7 @@ export function Navbar() {
                       className="cursor-pointer text-red-600"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
-                      Logout
+                      {t("logout")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -218,7 +220,7 @@ export function Navbar() {
                   </SheetTrigger>
                   <SheetContent side="right" className="px-6">
                     <SheetHeader>
-                      <SheetTitle>Menu</SheetTitle>
+                      <SheetTitle>{t("menu")}</SheetTitle>
                     </SheetHeader>
                     <nav className="flex flex-col gap-4 mt-6">
                       <Link
@@ -227,15 +229,7 @@ export function Navbar() {
                         onClick={closeMobileMenu}
                       >
                         <Home className="w-5 h-5" />
-                        Home
-                      </Link>
-                      <Link
-                        href="/snippets"
-                        className="flex items-center gap-3 text-lg hover:text-primary transition-colors"
-                        onClick={closeMobileMenu}
-                      >
-                        <FileText className="w-5 h-5" />
-                        Snippets
+                        {t("home")}
                       </Link>
                       <Link
                         href="/tags"
@@ -243,7 +237,7 @@ export function Navbar() {
                         onClick={closeMobileMenu}
                       >
                         <Tag className="w-5 h-5" />
-                        Tags
+                        {t("tags")}
                       </Link>
                       <div className="my-4 border-t" />
                       <Button
@@ -253,7 +247,7 @@ export function Navbar() {
                       >
                         <Link href="/snippets/new">
                           <FileText className="w-5 h-5 mr-3" />
-                          New Snippet
+                          {t("newSnippet")}
                         </Link>
                       </Button>
                     </nav>
@@ -269,7 +263,7 @@ export function Navbar() {
                 </SheetTrigger>
                 <SheetContent side="right" className="px-6">
                   <SheetHeader>
-                    <SheetTitle>Menu</SheetTitle>
+                    <SheetTitle>{t("menu")}</SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col gap-4 mt-6">
                     <Link
@@ -278,15 +272,7 @@ export function Navbar() {
                       onClick={closeMobileMenu}
                     >
                       <Home className="w-5 h-5" />
-                      Home
-                    </Link>
-                    <Link
-                      href="/snippets"
-                      className="flex items-center gap-3 text-lg hover:text-primary transition-colors"
-                      onClick={closeMobileMenu}
-                    >
-                      <FileText className="w-5 h-5" />
-                      Snippets
+                      {t("home")}
                     </Link>
                     <Link
                       href="/tags"
@@ -294,14 +280,14 @@ export function Navbar() {
                       onClick={closeMobileMenu}
                     >
                       <Tag className="w-5 h-5" />
-                      Tags
+                      {t("tags")}
                     </Link>
                     <div className="my-4 border-t" />
                     <Button asChild onClick={closeMobileMenu}>
-                      <Link href="/login">Login</Link>
+                      <Link href="/login">{t("login")}</Link>
                     </Button>
                     <Button asChild variant="outline" onClick={closeMobileMenu}>
-                      <Link href="/register">Sign Up</Link>
+                      <Link href="/register">{t("register")}</Link>
                     </Button>
                   </nav>
                 </SheetContent>

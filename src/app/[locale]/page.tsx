@@ -3,14 +3,16 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Code2, Plus } from "lucide-react";
-import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { SnippetFilters } from "@/components/features/snippet/SnippetFilters";
 import { SnippetList } from "@/components/features/snippet/SnippetList";
 import { TagCloud } from "@/components/features/tag/TagCloud";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 export default function HomePage() {
   const { user } = useAuth();
+  const t = useTranslations("home");
   const [filters, setFilters] = useState({
     search: "",
     language: "",
@@ -26,26 +28,25 @@ export default function HomePage() {
           <div className="max-w-3xl">
             <div className="flex items-center gap-3 mb-4">
               <Code2 className="h-10 w-10 text-primary" />
-              <h1 className="text-4xl font-bold">Code Snippet Platform</h1>
+              <h1 className="text-4xl font-bold">{t("title")}</h1>
             </div>
             <p className="text-xl text-muted-foreground mb-6">
-              Share code snippets, tag them by language and topic, and discover
-              solutions from the community
+              {t("subtitle")}
             </p>
             {user ? (
               <Button asChild size="lg">
                 <Link href="/snippets/new">
                   <Plus className="mr-2 h-5 w-5" />
-                  Create Snippet
+                  {t("createSnippet")}
                 </Link>
               </Button>
             ) : (
               <div className="flex gap-3">
                 <Button asChild size="lg">
-                  <Link href="/register">Get Started</Link>
+                  <Link href="/register">{t("getStarted")}</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <Link href="/login">Login</Link>
+                  <Link href="/login">{t("login")}</Link>
                 </Button>
               </div>
             )}
