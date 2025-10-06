@@ -32,6 +32,7 @@ import { Loader2 } from "lucide-react";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import { TagInput } from "./TagInput";
 import { useTranslations } from "next-intl";
+import { ComplexityAnalyzerDialog } from "./ComplexityAnalyzerDialog";
 
 const LANGUAGES = [
   "JavaScript",
@@ -76,6 +77,7 @@ export function SnippetForm({
   const router = useRouter();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [complexity, setComplexity] = useState<string | null>(null);
   const t = useTranslations("snippet");
   const tNoti = useTranslations("notification");
 
@@ -132,6 +134,7 @@ export function SnippetForm({
             topic: data.topic || "",
             tags: data.tags,
             isPublic: data.isPublic,
+            complexity: complexity || "",
           },
           defaultValues?.tags || []
         );
@@ -223,7 +226,6 @@ export function SnippetForm({
               />
             </div>
 
-            {/* Code Editor */}
             <FormField
               control={form.control}
               name="code"
@@ -252,7 +254,24 @@ export function SnippetForm({
               )}
             />
 
-            {/* Tags */}
+            <div className="flex items-center justify-between mt-2">
+              <ComplexityAnalyzerDialog
+                code={form.watch("code")}
+                onResult={(res) => {
+                  setComplexity(res.complexity);
+                  toast.success(
+                    `Detected ${res.complexity} (${res.confidence}% confidence)`
+                  );
+                }}
+              />
+
+              {complexity && (
+                <span className="text-sm text-muted-foreground">
+                  Complexity: <strong>{complexity}</strong>
+                </span>
+              )}
+            </div>
+
             <FormField
               control={form.control}
               name="tags"

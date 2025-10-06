@@ -80,7 +80,7 @@ export function SnippetList({ filters }: SnippetListProps) {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -116,7 +116,7 @@ export function SnippetList({ filters }: SnippetListProps) {
         {t("found")} {snippets.length}{" "}
         {snippets.length !== 1 ? t("snippets") : t("snippet")}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {snippets.map((snippet) => (
           <SnippetCard key={snippet.id} snippet={snippet} />
         ))}
