@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { SnippetFilters } from "@/components/features/snippet/SnippetFilters";
 import { SnippetList } from "@/components/features/snippet/SnippetList";
+import { TagCloud } from "@/components/features/tag/TagCloud";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -52,20 +53,22 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar - Filters */}
-          <aside className="lg:col-span-1">
-            <div className="sticky top-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <aside className="lg:col-span-3 order-1">
+            <div className="sticky top-20 space-y-6">
               <SnippetFilters filters={filters} onFiltersChange={setFilters} />
             </div>
           </aside>
-
-          {/* Main Content - Snippet List */}
-          <main className="lg:col-span-3">
+          <main className="lg:col-span-6 order-3 lg:order-2">
             <SnippetList filters={filters} />
           </main>
+
+          <aside className="lg:col-span-3 order-2 lg:order-3">
+            <div className="sticky top-20">
+              <TagCloud limit={15} />
+            </div>
+          </aside>
         </div>
       </div>
     </div>

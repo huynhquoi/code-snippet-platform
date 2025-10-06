@@ -115,7 +115,7 @@ export function Navbar() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link
-                        href={`/profile/${user.uid}`}
+                        href={`/profile/${user.username}`}
                         className="cursor-pointer"
                       >
                         <User className="mr-2 h-4 w-4" />
@@ -186,7 +186,7 @@ export function Navbar() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link
-                        href={`/profile/${user.uid}`}
+                        href={`/profile/${user.username}`}
                         className="cursor-pointer"
                       >
                         <User className="mr-2 h-4 w-4" />

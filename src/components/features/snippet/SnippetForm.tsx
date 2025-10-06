@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/contexts/AuthContext";
-import { createSnippet } from "@/lib/firebase/firestore";
+import { createSnippet, updateSnippet } from "@/lib/firebase/firestore";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -65,12 +65,12 @@ interface SnippetFormProps {
   mode?: "create" | "edit";
   defaultValues?: Partial<SnippetFormData>;
   snippetId?: string;
-  onSubmit?: (data: SnippetFormData) => Promise<void>;
 }
 
 export function SnippetForm({
   mode = "create",
   defaultValues,
+  snippetId,
 }: SnippetFormProps) {
   const router = useRouter();
   const { user } = useAuth();
@@ -97,22 +97,54 @@ export function SnippetForm({
     setIsSubmitting(true);
 
     try {
-      const { slug } = await createSnippet({
-        title: data.title,
-        code: data.code,
-        language: data.language,
-        topic: data.topic || "",
-        tags: data.tags,
-        userId: user.uid,
-        userDisplayName: user.displayName || "Anonymous",
-        isPublic: data.isPublic,
-      });
+      if (mode === "create") {
+        // Create new snippet
+        const { slug } = await createSnippet({
+          title: data.title,
+          code: data.code,
+          language: data.language,
+          topic: data.topic || "",
+          tags: data.tags,
+          userId: user.uid,
+          userDisplayName: user.displayName || "Anonymous",
+          isPublic: data.isPublic,
+        });
 
-      toast.success("Snippet created successfully!");
-      router.push(`/snippets/${slug}`);
+        toast.success("Snippet created successfully!");
+        router.push(`/snippets/${slug}`);
+      } else {
+        // Update existing snippet
+        if (!snippetId) {
+          toast.error("Snippet ID is missing");
+          return;
+        }
+
+        const newSlug = await updateSnippet(
+          snippetId,
+          {
+            title: data.title,
+            code: data.code,
+            language: data.language,
+            topic: data.topic || "",
+            tags: data.tags,
+            isPublic: data.isPublic,
+          },
+          defaultValues?.tags || []
+        );
+
+        toast.success("Snippet updated successfully!");
+        router.push(`/snippets/${newSlug}`);
+      }
     } catch (error) {
-      console.error("Error creating snippet:", error);
-      toast.error("Failed to create snippet. Please try again.");
+      console.error(
+        `Error ${mode === "create" ? "creating" : "updating"} snippet:`,
+        error
+      );
+      toast.error(
+        `Failed to ${
+          mode === "create" ? "create" : "update"
+        } snippet. Please try again.`
+      );
     } finally {
       setIsSubmitting(false);
     }

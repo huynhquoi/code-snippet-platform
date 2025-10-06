@@ -14,9 +14,14 @@ import {
   signIn as firebaseSignIn,
   signOut as firebaseSignOut,
 } from "@/lib/firebase/auth";
+import { getUserById } from "@/lib/firebase/firestore";
+
+interface ExtendedUser extends User {
+  username?: string;
+}
 
 interface AuthContextType {
-  user: User | null;
+  user: ExtendedUser | null;
   loading: boolean;
   signUp: (
     email: string,
@@ -30,12 +35,30 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<ExtendedUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Fetch username from Firestore
+        try {
+          const userData = await getUserById(firebaseUser.uid);
+          if (userData) {
+            // Extend Firebase User with username
+            const extendedUser = firebaseUser as ExtendedUser;
+            extendedUser.username = userData.username;
+            setUser(extendedUser);
+          } else {
+            setUser(firebaseUser);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          setUser(firebaseUser);
+        }
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
 

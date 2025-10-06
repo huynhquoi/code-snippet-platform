@@ -258,3 +258,99 @@ export async function getTagBySlug(slug: string) {
 
   return docSnap.data() as Tag;
 }
+
+// ============================================
+// USER OPERATIONS
+// ============================================
+
+export async function getUserByUsername(username: string) {
+  const q = query(
+    collection(db, "users"),
+    where("username", "==", username),
+    limit(1)
+  );
+  const querySnapshot = await getDocs(q);
+
+  if (querySnapshot.empty) {
+    return null;
+  }
+
+  const doc = querySnapshot.docs[0];
+  return {
+    uid: doc.id,
+    ...doc.data(),
+    createdAt: (doc.data().createdAt as Timestamp)?.toDate(),
+  } as {
+    uid: string;
+    email: string;
+    displayName: string;
+    username: string;
+    photoURL?: string;
+    createdAt: Date;
+    snippetCount: number;
+  };
+}
+
+export async function getUserById(uid: string) {
+  const docRef = doc(db, "users", uid);
+  const docSnap = await getDoc(docRef);
+
+  if (!docSnap.exists()) {
+    return null;
+  }
+
+  return {
+    uid: docSnap.id,
+    ...docSnap.data(),
+    createdAt: (docSnap.data().createdAt as Timestamp)?.toDate(),
+  } as {
+    uid: string;
+    email: string;
+    displayName: string;
+    username: string;
+    photoURL?: string;
+    createdAt: Date;
+    snippetCount: number;
+  };
+}
+
+export async function getUserStats(userId: string) {
+  const snippetsQuery = query(
+    collection(db, "snippets"),
+    where("userId", "==", userId)
+  );
+  const snippetsSnapshot = await getDocs(snippetsQuery);
+  const snippets = snippetsSnapshot.docs.map((doc) => doc.data());
+
+  const totalViews = snippets.reduce(
+    (sum, snippet) => sum + (snippet.viewCount || 0),
+    0
+  );
+
+  const languagesMap = new Map<string, number>();
+  snippets.forEach((snippet) => {
+    const lang = snippet.language;
+    languagesMap.set(lang, (languagesMap.get(lang) || 0) + 1);
+  });
+  const languages = Array.from(languagesMap.entries())
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+
+  const tagsMap = new Map<string, number>();
+  snippets.forEach((snippet) => {
+    snippet.tags?.forEach((tag: string) => {
+      tagsMap.set(tag, (tagsMap.get(tag) || 0) + 1);
+    });
+  });
+  const topTags = Array.from(tagsMap.entries())
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  return {
+    totalSnippets: snippets.length,
+    totalViews,
+    languages,
+    topTags,
+  };
+}
