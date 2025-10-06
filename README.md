@@ -44,6 +44,69 @@ Live Demo 👉 [code-snippet-platform-one.vercel.app](https://code-snippet-platf
 | Code Highlight | [react-syntax-highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter) |
 
 ---
+## 📝 Technical Decisions
+
+### Why Firebase?
+- **Fast setup**: Authentication and database in one platform
+- **Real-time capabilities**: Future feature potential
+- **Generous free tier**: Perfect for demo projects
+- **Scalability**: Easy to scale if needed
+- **No backend required**: Focus on frontend development
+
+### Why No Firebase Storage?
+- User avatars use initials fallback (no image uploads needed)
+- Keeps the project 100% free tier
+- Simplifies architecture
+- Alternative: Could integrate Cloudinary or Gravatar in production
+
+### Why shadcn/ui?
+- **Flexibility**: Copy-paste components, full control
+- **Customization**: Easy to modify styles
+- **Type-safe**: Built with TypeScript
+- **Accessible**: WAI-ARIA compliant
+- **Modern**: Latest React patterns and best practices
+
+## 🔮 Future Improvements
+
+With more time, I would add:
+
+- **Social Features**
+  - Like/bookmark snippets
+  - Follow users
+  - Comment system
+  - Activity feed
+
+- **Advanced Search**
+  - Full-text search with Algolia
+  - Code search by syntax
+  - Advanced filters
+
+- **Collaboration**
+  - Fork snippets
+  - Version history
+  - Collaborative editing
+
+- **Enhanced Analyzer**
+  - More complex algorithm detection
+  - Space complexity analysis
+  - Performance benchmarking
+  - AI-powered suggestions
+
+- **Code Execution**
+  - Run code snippets online
+  - Multiple language support
+  - Input/output testing
+
+- **Collections**
+  - Organize snippets into collections
+  - Share collections
+  - Public/private collections
+
+- **Export/Import**
+  - Export to GitHub Gist
+  - Import from GitHub
+  - Export as PDF/Markdown
+---
 
 ## 🧩 Folder Structure
 
