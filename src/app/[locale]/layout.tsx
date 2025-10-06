@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Navbar } from "@/components/layout/NavBar";
 import { locales } from "@/i18n/request";
-
+import { ThemeProvider } from "next-themes";
 
 // export const metadata: Metadata = {
 //   title: "Code Snippet Platform",
@@ -39,12 +39,9 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export default async function LocaleLayout({
-  children,
-  params
-}: Props) {
+export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
-  
+
   if (!locales.includes(locale as Locale)) {
     notFound();
   }
@@ -52,15 +49,17 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body>
-        <NextIntlClientProvider messages={messages}>
-          <AuthProvider>
-            <Navbar />
-            <main>{children}</main>
-            <Toaster richColors position="top-right" />
-          </AuthProvider>
-        </NextIntlClientProvider>
+        <ThemeProvider attribute="class" defaultTheme="system">
+          <NextIntlClientProvider messages={messages}>
+            <AuthProvider>
+              <Navbar />
+              <main>{children}</main>
+              <Toaster richColors position="top-right" />
+            </AuthProvider>
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

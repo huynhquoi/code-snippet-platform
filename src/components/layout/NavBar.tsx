@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Link } from "@/i18n/routing";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 export function Navbar() {
   const { user, loading, signOut } = useAuth();
@@ -74,6 +75,8 @@ export function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
+            <ThemeSwitcher />
+
             <LanguageSwitcher />
 
             {loading ? (
